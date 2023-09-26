@@ -1,0 +1,118 @@
+generator client {
+    provider        = "prisma-client-js" //looking for it
+    previewFeatures = ["jsonProtocol"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
+    // directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+    // shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+}
+
+model Services {
+    id         String @id @default(dbgenerated("gen_random_uuid()"))
+    name       String
+    duration   Int
+    companieId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Companie Companie @relation(fields: [companieId], references: [id])
+}
+
+model User {
+    id             String   @id @default(dbgenerated("gen_random_uuid()"))
+    name           String?
+    email          String   @unique
+    phoneNumber    String?  @unique
+    password       String?
+    country        String?
+    provider       String?
+    companieId     String?
+    planId         String?
+    annualDiscount Boolean?
+    method         String?
+    completeAuth   Boolean  @default(false)
+    registerStep   Int      @default(1)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Companie Companie? @relation(fields: [companieId], references: [id])
+    Plan     Plans?    @relation(fields: [planId], references: [id])
+}
+
+model Companie {
+    id           String   @id @default(dbgenerated("gen_random_uuid()"))
+    name         String
+    type         String?
+    shareCode    String?  @unique
+    address      String?
+    amountAtTime Int?     @default(1)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    Appointments Appointments[]
+    Services     Services[]
+    User         User[]
+    Schedules    Schedules[]
+}
+
+model Appointments {
+    id            String     @id @default(dbgenerated("gen_random_uuid()"))
+    name          String
+    phoneNumber   String
+    date          String?
+    services      String[]
+    hours         DateTime[]
+    confirmedHour DateTime?
+    status        String?    @default("waiting")
+    companieId    String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Companie Companie @relation(fields: [companieId], references: [id])
+}
+
+model Schedules {
+    id         String   @id @default(dbgenerated("gen_random_uuid()"))
+    days       String[]
+    companieId String
+
+    start String
+    end   String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Companie Companie @relation(fields: [companieId], references: [id])
+    // Hours    Hours[]
+}
+
+// model Hours {
+//     id         String   @id @default(dbgenerated("gen_random_uuid()"))
+//     start      String
+//     end        String
+//     scheduleId String
+//     createdAt  DateTime @default(now())
+//     updatedAt  DateTime @updatedAt
+
+//     schedule Schedules @relation(fields: [scheduleId], references: [id])
+// }
+
+model Plans {
+    id              String @id @default(dbgenerated("gen_random_uuid()"))
+    name            String
+    maxAppointments Int
+    country         String
+    initials        String
+    annualValue     Float
+    annualDiscount  Float
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    User      User[]
+}
