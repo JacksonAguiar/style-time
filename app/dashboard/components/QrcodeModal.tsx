@@ -3,16 +3,20 @@ import { Modal, ModalBody, ModalContent, ModalFooter } from "@nextui-org/react";
 
 import Image from "next/image";
 
+import { useQRCode } from "next-qrcode";
 import { FiDownload } from "react-icons/fi";
 const QrcodeModal = ({
   onSubmit,
   isOpen,
+  code,
   onOpenChange,
 }: {
   onSubmit: (onClose: any) => void;
   isOpen: boolean;
+  code: string;
   onOpenChange: () => void;
 }) => {
+  const { SVG } = useQRCode();
   return (
     <Modal
       isOpen={isOpen}
@@ -24,15 +28,20 @@ const QrcodeModal = ({
         {(onClose) => (
           <>
             <ModalBody>
-              <Image
-                width={300}
-                height={300}
-                src={
-                  ""
-                }
-                alt="qr-code"
-              />
-              <span className="mt-2 mb-4">
+              <div className="flex justify-center">
+
+              <SVG
+                text={"https://github.com/bunlong/next-qrcode"}
+                options={{
+                  width: 300,
+                  // color: {
+                    //   dark: "#010599FF",
+                    //   light: "#FFBF60FF",
+                    // },
+                  }}
+                  />
+                  </div>
+              <span className="mb-4">
                 Use o qr-code para facilitar o agendamento de seus clietnes. ;)
               </span>
               <Button
@@ -44,7 +53,11 @@ const QrcodeModal = ({
               </Button>
             </ModalBody>
             <ModalFooter>
-              <Button fullWidth color="default" onPress={() => onSubmit(onClose)}>
+              <Button
+                fullWidth
+                color="default"
+                onPress={() => onSubmit(onClose)}
+              >
                 Fechar
               </Button>
             </ModalFooter>

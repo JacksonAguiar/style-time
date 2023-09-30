@@ -19,7 +19,7 @@ model Services {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Companie Companie @relation(fields: [companieId], references: [id])
+    Company Company @relation(fields: [companieId], references: [id])
 }
 
 model User {
@@ -30,7 +30,7 @@ model User {
     password       String?
     country        String?
     provider       String?
-    companieId     String?
+    companieId     String?  @unique
     planId         String?
     annualDiscount Boolean?
     method         String?
@@ -40,11 +40,11 @@ model User {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Companie Companie? @relation(fields: [companieId], references: [id])
-    Plan     Plans?    @relation(fields: [planId], references: [id])
+    Company Company? @relation(fields: [companieId], references: [id])
+    Plan    Plans?   @relation(fields: [planId], references: [id])
 }
 
-model Companie {
+model Company {
     id           String   @id @default(dbgenerated("gen_random_uuid()"))
     name         String
     type         String?
@@ -56,25 +56,26 @@ model Companie {
 
     Appointments Appointments[]
     Services     Services[]
-    User         User[]
+    User         User?
     Schedules    Schedules[]
 }
 
 model Appointments {
-    id            String     @id @default(dbgenerated("gen_random_uuid()"))
-    name          String
-    phoneNumber   String
-    date          String?
-    services      String[]
-    hours         DateTime[]
-    confirmedHour DateTime?
-    status        String?    @default("waiting")
-    companieId    String
+    id               String     @id @default(dbgenerated("gen_random_uuid()"))
+    name             String
+    phoneNumber      String
+    date             String?
+    confirmationCode String?
+    services         String[]
+    hours            DateTime[]
+    confirmedHour    DateTime?
+    status           String?    @default("waiting")
+    companieId       String
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Companie Companie @relation(fields: [companieId], references: [id])
+    Company Company @relation(fields: [companieId], references: [id])
 }
 
 model Schedules {
@@ -88,7 +89,7 @@ model Schedules {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    Companie Companie @relation(fields: [companieId], references: [id])
+    Company Company @relation(fields: [companieId], references: [id])
     // Hours    Hours[]
 }
 

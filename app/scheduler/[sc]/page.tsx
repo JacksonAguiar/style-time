@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import CompanieService from "../../services/CompanieService";
+import CompanieService from "../../api/services/CompanyService";
 import UseSteps from "./steps.component";
 
 export interface ComponentProps {

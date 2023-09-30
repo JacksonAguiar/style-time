@@ -1,34 +1,31 @@
-"use client";
-import { Button } from "@nextui-org/button";
-import Image from "next/image";
-import { FiArrowUp } from "react-icons/fi";
-import { useRouter } from "next/navigation";
-// import Home from "./page.component";
-
-export default function Start() {
-  const router = useRouter();
-
-  return (
-    <div className="p-6 h-full w-full flex flex-col justify-between">
-      <Image
-        src="/icon.svg"
-        alt="STYLE TIME"
-        width={300}
-        height={200}
-        quality={100}
-        priority
-      />
-
-      <div>Carousel with marketing texts</div>
-      <div>
-        <Button fullWidth size="lg" className="mb-8" onClick={()=> router.push("/login")}>
-          Entrar
-        </Button>
-        {/* <div>
-          <FiArrowUp />
-          <p>Fazer Agendamento</p>
-        </div> */}
+export const metadata = {
+    title: "Style time",
+    description: "Page description",
+  };
+  
+  import Hero from "@/components/hero";
+  import Features from "@/components/features";
+  import FeaturesBlocks from "@/components/features-blocks";
+  import Testimonials from "@/components/testimonials";
+  import Newsletter from "@/components/newsletter";
+  import Header from "@/components/ui/header";
+  import Banner from "@/components/banner";
+  
+  export default function Start() {
+    return (
+      <div
+        className={`antialiased bg-white text-gray-900 tracking-tight`}
+      >
+        <div className="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip">
+          <Header />
+          <Hero />
+          <FeaturesBlocks />
+          <Features />
+          <Testimonials />
+          <Newsletter />
+          {/* <Banner /> */}
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+  

@@ -1,3 +1,4 @@
+"use client";
 import { Button, Chip, Divider, useDisclosure } from "@nextui-org/react";
 
 import { RiScissorsLine } from "react-icons/ri";
@@ -8,25 +9,43 @@ import ReportModal from "../components/ReportModal";
 import ServicesModal from "../components/ServicesModal";
 import ScheduleModal from "../components/ScheduleModal";
 import QrcodeModal from "../components/QrcodeModal";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
-export default function ProfilePage() {
+export default function ProfilePage({
+  placeName,
+  services,
+  schedules,
+  plan,
+  sharedCode,
+}: {
+  sharedCode: string;
+  placeName: string;
+  services: any[];
+  schedules: any[];
+  plan: any;
+}) {
+  console.log(plan);
+
   const modalServices = useDisclosure();
   const modalShedules = useDisclosure();
   const modalQrcode = useDisclosure();
   const modalReport = useDisclosure();
-  
+
   return (
     <div className="h-full flex flex-col">
       <div>
         <header className="h-52">
           <div className="bg-black w-full h-3/6" />
           <div className="flex flex-col justify-center items-center text-center absolute top-12 left-0 right-0">
-            <div className="flex items-center justify-center bg-black text-white font-bold text-4xl rounded-2xl border-8 border-white w-[100px] h-[100px]">
-              BB
+            <div className="flex uppercase items-center justify-center bg-black text-white font-bold text-4xl rounded-2xl border-8 border-white w-[100px] h-[100px]">
+              {placeName.split(" ").map((e) => e[0])}
             </div>
-            <h2 className="text-2xl font-bold">Baillan Barbearia</h2>
-            <span>Rua das drogas, 34</span>
+            <h2 className="text-2xl font-bold">{placeName}</h2>
+            {/* <span>Rua das drogas, 34</span> */}
+            <Link href={"#"} className="text-[#00C2FF] font-medium text-base">
+              Adicionar endereço
+            </Link>
             {/* <Link className="text-[#00C2FF] font-medium text-base">
               @Baillan.barber
             </Link> */}
@@ -36,11 +55,11 @@ export default function ProfilePage() {
       <div className="">
         <div className="p-6">
           <CardPlan
-            name="start"
-            amount="50"
-            period="anual"
-            startDate="24/09/2023"
-            value="249,00"
+            period={plan.annualDiscount ? "anual" : "mensal"}
+            startDate={plan.createdAt}
+            name={plan.Plan.name}
+            amount={plan.Plan.maxAppointments}
+            value={"R$ " + plan.Plan.annualValue}
           />
         </div>
         <ul className="mt-6">
@@ -74,7 +93,10 @@ export default function ProfilePage() {
             <span>Reportar um problema</span>
           </li>
           <Divider className="mt-16" />
-          <li onClick={()=> signOut()} className="flex items-center text-xl mt-5 justify-center opacity-40 font-bold active:opacity-50 transition-opacity">
+          <li
+            onClick={() => signOut()}
+            className="flex items-center text-xl mt-5 justify-center opacity-30 font-bold active:opacity-50 transition-opacity"
+          >
             <PiSignOut className="mr-3" size={22} />
             <span>Sair</span>
           </li>
@@ -97,6 +119,7 @@ export default function ProfilePage() {
       />
       <QrcodeModal
         isOpen={modalQrcode.isOpen}
+        code={sharedCode}
         onOpenChange={modalQrcode.onOpenChange}
         onSubmit={(close) => close()}
       />
@@ -140,9 +163,23 @@ const CardPlan = ({
           {value}/{period}
         </Chip>
         <span className="text-xs font-normal text-white opacity-50">
-          Inicio: {startDate}
+          Inicio: {formatDate(startDate)}
         </span>
       </div>
     </div>
   );
 };
+
+function formatDate(isoDateTime: string) {
+  const dateTime = new Date(isoDateTime);
+
+  // Extract the day, month, and year components
+  const day = dateTime.getDate();
+  const month = dateTime.getMonth() + 1; // Note: Months are zero-based
+  const year = dateTime.getFullYear();
+
+  // Format the date as "DD/MM/YYYY"
+  return `${day.toString().padStart(2, "0")}/${month
+    .toString()
+    .padStart(2, "0")}/${year}`;
+}

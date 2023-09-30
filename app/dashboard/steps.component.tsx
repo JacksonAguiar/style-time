@@ -14,7 +14,7 @@ export default function CustomNavigationBarComponent({
   const [key, setKey] = useState<Key>(defaultKey);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-screen overflow-hidden">
       {pages[key]}
       <CustomNavigationBar onChange={(i) => setKey(i)} defaultValue={key} />
     </div>
