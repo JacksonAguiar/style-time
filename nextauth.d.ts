@@ -9,7 +9,6 @@ interface IUser extends DefaultUser {
   provider?: string;
   companieId?: string;
   companieName?: string;
-  completeAuth?: boolean;
   /**
    * Field to check whether a user has a subscription
    */

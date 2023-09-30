@@ -37,7 +37,7 @@ const ReportModal = ({
         {(onClose) => (
           <>
             <ModalHeader>
-              <h2 className="font-bold text-2xl">Rerportar um problema</h2>
+              <h2 className="font-bold text-2xl">Reportar um problema</h2>
             </ModalHeader>
             <ModalBody>
               <Select
@@ -53,10 +53,10 @@ const ReportModal = ({
                   </SelectItem>
                 ))}
               </Select>
-              <label htmlFor="attachments" className="mt-2 text-sm">Anexos: </label>
+              {/* <label htmlFor="attachments" className="mt-2 text-sm">Anexos: </label>
               <div id="attachments" className="flex gap-2">
                 <UploadCard onChange={(p) => console.log(p)} />
-              </div>
+              </div> */}
               <Textarea
                 label="Nos conte o que aconteceu:"
                 labelPlacement="outside"

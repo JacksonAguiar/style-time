@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { step1, step2, step4, useStep3, step5 } from "../pages";
 import finish from "../pages/finish";
-import AppointmentsService from "@/app/services/AppointmentsService";
+import AppointmentsService from "@/app/api/services/AppointmentsService";
 
 export interface ScheduleI {
   name?: string;
@@ -85,7 +85,7 @@ const UseSteps = ({
 
   return (
     <div className="p-8 w-full h-screen flex justify-between flex-col">
-      {pages[index]}
+      {pages[2]}
     </div>
   );
 };

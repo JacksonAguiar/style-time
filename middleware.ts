@@ -17,34 +17,21 @@ export default async function middleware(req: NextRequest) {
     console.log("go start");
     return NextResponse.redirect(new URL(start, req.url));
   } else if (session) {
-    const completeLogin =
-      (session.completeAuth && session.provider == "credentials") ||
-      session.provider == "google";
+    if (path == "/signin" || path == "/" || path == "/register") {
+      const completeRegister = session.registerStep == 0;
 
-    const completeRegister = session.registerStep == 0;
-
-    if (!completeLogin) {
-      return NextResponse.redirect(
-        new URL("/login/password?wtk=false", req.url)
-      );
-    } else if (!completeRegister) {
-      return NextResponse.redirect(
-        new URL("/register?s=" + session.registerStep, req.url)
-      );
+      if (!completeRegister) {
+        return NextResponse.redirect(
+          new URL("/register?s=" + session.registerStep, req.url)
+        );
+      }
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
-
-    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
 }
 export const config = {
   // The above middleware would only run for the "/" path
-  matcher: [
-    "/",
-    "/dashboard",
-    "/login",
-    "/login/password",
-    "/register"
-  ],
+  matcher: ["/", "/dashboard", "/signin", "/register"],
 };

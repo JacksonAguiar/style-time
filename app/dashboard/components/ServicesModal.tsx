@@ -22,7 +22,7 @@ const ServicesModal = ({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex justify-between">
+            <ModalHeader className="flex justify-between items-center">
               <h2 className="font-bold text-2xl">Seus serviços</h2>
               <Button
                 startContent={<FiEdit color="#00C2FF" size={20} />}

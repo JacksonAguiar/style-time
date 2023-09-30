@@ -45,10 +45,10 @@ export function getNextDays(limit = 5) {
   return nextDays;
 }
 
-function generateTimeSlots(
+export function generateTimeSlots(
   start: string,
   end: string,
-  intervalMinutes: number
+  intervalMinutes: number = 60
 ): string[] {
   const timeSlots: string[] = [];
   const startTime = new Date(`1970-01-01T${start}:00`);
@@ -59,6 +59,7 @@ function generateTimeSlots(
     const formattedTime = currentTime.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false
     });
     timeSlots.push(formattedTime);
     currentTime.setMinutes(currentTime.getMinutes() + intervalMinutes);
