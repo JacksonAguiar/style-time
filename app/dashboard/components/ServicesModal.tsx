@@ -1,3 +1,4 @@
+import { IServices } from "@/types";
 import { Button } from "@nextui-org/button";
 import {
   Modal,
@@ -11,14 +12,21 @@ import { FiEdit } from "react-icons/fi";
 const ServicesModal = ({
   onSubmit,
   isOpen,
+  servicesData,
   onOpenChange,
 }: {
   onSubmit: (onClose: any) => void;
   isOpen: boolean;
+  servicesData: IServices[];
   onOpenChange: () => void;
 }) => {
   return (
-    <Modal isOpen={isOpen} placement={"bottom"} onOpenChange={onOpenChange} hideCloseButton>
+    <Modal
+      isOpen={isOpen}
+      placement={"bottom"}
+      onOpenChange={onOpenChange}
+      hideCloseButton
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -32,19 +40,23 @@ const ServicesModal = ({
             </ModalHeader>
             <ModalBody>
               <ul>
-                {[0, 1, 2, 3, 4, 5].map((e, i) => {
+                {servicesData.map((e, i) => {
                   return (
                     <li key={i} className="flex items-baseline mb-1">
-                      <span>Corte social</span>
+                      <span>{e.name}</span>
                       <div className="flex-1 border-b-1 border-dotted"></div>
-                      <h5>60min</h5>
+                      <h5>{e.duration}min</h5>
                     </li>
                   );
                 })}
               </ul>
             </ModalBody>
             <ModalFooter>
-              <Button fullWidth color="default" onPress={() => onSubmit(onClose)}>
+              <Button
+                fullWidth
+                color="default"
+                onPress={() => onSubmit(onClose)}
+              >
                 Fechar
               </Button>
             </ModalFooter>

@@ -1,3 +1,4 @@
+import { ISchedules } from "@/types";
 import { Button } from "@nextui-org/button";
 import {
   Modal,
@@ -12,14 +13,21 @@ import { TbCalendarPause } from "react-icons/tb";
 const ScheduleModal = ({
   onSubmit,
   isOpen,
+  schedulesData,
   onOpenChange,
 }: {
   onSubmit: (onClose: any) => void;
   isOpen: boolean;
+  schedulesData: ISchedules[];
   onOpenChange: () => void;
 }) => {
   return (
-    <Modal isOpen={isOpen} placement={"bottom"} onOpenChange={onOpenChange} hideCloseButton>
+    <Modal
+      isOpen={isOpen}
+      placement={"bottom"}
+      onOpenChange={onOpenChange}
+      hideCloseButton
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -33,12 +41,13 @@ const ScheduleModal = ({
             </ModalHeader>
             <ModalBody>
               <div>
-                {[0, 1, 2].map((e, i) => {
+                {schedulesData.map((e, i) => {
                   return (
                     <ScheduleCard
                       key={i}
-                      days=""
-                      hours={[]}
+                      end_hour={e.start}
+                      start_hour={e.end}
+                      days={e.days}
                       onPauseSchedule={() => {}}
                     />
                   );
@@ -46,7 +55,11 @@ const ScheduleModal = ({
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button fullWidth color="default" onPress={() => onSubmit(onClose)}>
+              <Button
+                fullWidth
+                color="default"
+                onPress={() => onSubmit(onClose)}
+              >
                 Fechar
               </Button>
             </ModalFooter>
@@ -59,33 +72,31 @@ const ScheduleModal = ({
 
 const ScheduleCard = ({
   days,
-  hours,
+  start_hour,
+  end_hour,
   onPauseSchedule,
 }: {
-  days: string;
-  hours: string[];
+  days: string[];
+  start_hour: string;
+  end_hour: string;
   onPauseSchedule: () => void;
 }) => {
   return (
     <div className="flex w-full flex-col p-3 border-1.5 border-foreground-300 rounded-xl mb-2">
-      <h3 className="font-semibold text-lg">Seg, Ter, Qua, Qui, Sex</h3>
+      <h3 className="font-semibold text-lg">{days.join(", ")}</h3>
       <div className="flex mt-1 flex-wrap mb-2">
-        {[0, 1, 2].map((e, i) => {
-          return (
-            <span key={i} className="px-1">
-              07:00 am - 12:00am
-            </span>
-          );
-        })}
+        <span className="px-1">
+          {start_hour} - {end_hour}
+        </span>
       </div>
-      <Button
+      {/* <Button
         startContent={<TbCalendarPause />}
         size="sm"
         color="warning"
         onClick={onPauseSchedule}
       >
-        Pausar horários
-      </Button>
+        Pausar agenda
+      </Button> */}
     </div>
   );
 };

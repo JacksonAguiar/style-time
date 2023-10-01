@@ -1,4 +1,4 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth, { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import prisma from "@/config/prisma";
@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
             registerStep: true,
             password: true,
             provider: true,
-            Companie: { select: { name: true } },
+            Company: { select: { name: true } },
           },
         });
 
@@ -114,7 +114,7 @@ export const authOptions: NextAuthOptions = {
             registerStep: true,
             password: true,
             provider: true,
-            Companie: { select: { name: true } },
+            Company: { select: { name: true } },
           },
         });
 
@@ -136,5 +136,4 @@ export const authOptions: NextAuthOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

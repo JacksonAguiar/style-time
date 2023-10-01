@@ -28,6 +28,7 @@ export default function useStepName(props: CustomComponentProps) {
       onSubmit={onSubmit}
       chipEmail={data?.user?.email}
       key={"name-form"}
+      onChangeMenuHeader={props.onSendReport}
     >
       <input
         className="w-full text-xl outline-transparent font-normal"

@@ -51,7 +51,9 @@ export function Header({
           </DropdownTrigger>
           <DropdownMenu
             aria-label="Static Actions"
-            onSelectionChange={onChangeMenu}
+            onSelectionChange={(key) =>
+              key.toString() == "report" ? onChangeMenu : ""
+            }
           >
             <DropdownItem key="report">Reportar um problema</DropdownItem>
             <DropdownItem key="change" onClick={() => signOut()}>
@@ -76,13 +78,24 @@ export function Footer({
   onClick,
   buttonText,
   withoutIcon = false,
+  skipButton = false,
 }: {
   onClick: () => void;
   buttonText?: string | null;
   withoutIcon?: boolean;
+  skipButton?: boolean;
 }) {
   return (
-    <footer className="flex justify-end">
+    <footer
+      className={`flex items-center ${
+        skipButton ? "justify-between" : "justify-end"
+      } `}
+    >
+      {skipButton && (
+        <Button className="tap-highlight-transparent bg-transparent text-blue-600">
+          Pular
+        </Button>
+      )}
       <Button
         size="md"
         onClick={onClick}
@@ -107,6 +120,7 @@ export function Page({
   withoutIcon = false,
   removeFooter = false,
   removeHeader = false,
+  skip = false,
   chipEmail = null,
   onChangeMenuHeader,
 }: {
@@ -114,6 +128,7 @@ export function Page({
   withoutIcon?: boolean;
   removeFooter?: boolean;
   removeHeader?: boolean;
+  skip?: boolean;
   submitTextButton?: string | null;
   onClickBack: () => void;
   onSubmit: () => void;
@@ -140,6 +155,7 @@ export function Page({
           onClick={() => onSubmit()}
           buttonText={submitTextButton}
           withoutIcon={withoutIcon}
+          skipButton={skip}
         />
       )}
     </div>

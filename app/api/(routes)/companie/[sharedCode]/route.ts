@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { sharedCode: string } }
 ) {
   var code = params.sharedCode;
-  const comp = await prisma.companie.findUnique({
+  const comp = await prisma.company.findUnique({
     where: {
       shareCode: code,
     },

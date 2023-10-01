@@ -36,7 +36,6 @@ export default function useStepServices(props: CustomComponentProps) {
     input: ["font-medium"],
     inputWrapper: ["h-12"],
   };
-
   const handleClose = (s: any) => {
     setServices(services.filter((s) => s.name !== s.name));
   };
@@ -63,6 +62,8 @@ export default function useStepServices(props: CustomComponentProps) {
       Title="Quais serviços você oferece?"
       onClickBack={props.previousFunction}
       onSubmit={onSubmit}
+      chipEmail={data?.user?.email}
+      onChangeMenuHeader={props.onSendReport}
     >
       <div className="mb-5 flex flex-wrap gap-3">
         {services.length == 0 && (

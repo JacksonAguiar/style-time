@@ -7,9 +7,10 @@ import CompanieService from "@/app/api/services/CompanyService";
 import { useSession } from "next-auth/react";
 import UserService from "@/app/api/services/UserService";
 
-export default function useStepAddressPlace(props: CustomComponentProps) {
+export default function UseStepAddressPlace(props: CustomComponentProps) {
   const [address, setAddress] = useState(props.value);
   const { data, update } = useSession();
+
   const onSubmit = async () => {
     const { companieId, id } = data?.user ?? {};
     var res = await CompanieService.update(companieId ?? "", {
@@ -17,10 +18,6 @@ export default function useStepAddressPlace(props: CustomComponentProps) {
     });
 
     if (res) {
-      await UserService.update(id?? "", {
-        registerStep: props.step,
-      });
-      update({ registerStep: props.step });
       props.nextFunction();
     }
   };
@@ -29,12 +26,15 @@ export default function useStepAddressPlace(props: CustomComponentProps) {
       Title="Qual o endereço?"
       onClickBack={props.previousFunction}
       onSubmit={onSubmit}
-      key={"place-name-form"}
+      key={"place-address-form"}
+      // chipEmail={data?.user?.email ?? ""}
+      // onChangeMenuHeader={props.onSendReport}
+      // skip={!props.edit}
     >
       <p>Rua, número, Bairro, cidade/Estado</p>
       <input
         className="w-full text-xl outline-transparent font-normal"
-        placeholder="Ex: Rua andorra, 80, Butantã, São Paulo/SP"
+        placeholder="Ex: Rua andorra, 64, Morumbi, São Paulo/SP"
         onChange={(el) => setAddress(el.target.value)}
       />
     </Page>

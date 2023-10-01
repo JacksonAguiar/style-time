@@ -90,6 +90,7 @@ export default function useStepSimpleSchedule(props: CustomComponentProps) {
       submitTextButton="Concluir"
       removeFooter={schedules.length == 0}
       chipEmail={data?.user?.email}
+      onChangeMenuHeader={props.onSendReport}
     >
       <div>
         <div>

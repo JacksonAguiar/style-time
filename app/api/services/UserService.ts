@@ -1,9 +1,40 @@
+import { getSession, useSession } from "next-auth/react";
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 class UserServiceClass {
   URL_BASE: string;
 
   constructor() {
     this.URL_BASE = process.env.NEXT_PUBLIC_URL_BASE as string;
+  }
+  async sendReport(
+    title: string,
+    description: string,
+    userId: string
+  ): Promise<any> {
+    // const headerInstance = headers();
+
+    // const cookie = headerInstance.get("cookie") ?? "";
+    // let token = "";
+    // if (cookie) {
+    //   token = cookie.split(";")[2];
+    // }
+    // const authorization = token.split("=")[1];
+
+    const { data, error, isLoading } = await fetch(
+      this.URL_BASE + "/api/user/report/" + userId,
+      {
+        body: JSON.stringify({ title, description }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }
+    ).then((value) => value.json());
+
+    if (error) NextResponse.json({ data: error }, { status: 400 });
+
+    return NextResponse.json({ data: data }, { status: 200 });
   }
   async getByEmailOrPhone(email: string): Promise<any> {
     try {

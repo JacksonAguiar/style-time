@@ -11,6 +11,8 @@ import ScheduleModal from "../components/ScheduleModal";
 import QrcodeModal from "../components/QrcodeModal";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { FiEdit, FiEdit2 } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage({
   placeName,
@@ -18,14 +20,17 @@ export default function ProfilePage({
   schedules,
   plan,
   sharedCode,
+  placeAddress,
 }: {
   sharedCode: string;
   placeName: string;
+  placeAddress: string;
   services: any[];
   schedules: any[];
   plan: any;
 }) {
-  console.log(plan);
+  const { data } = useSession();
+  const router = useRouter()
 
   const modalServices = useDisclosure();
   const modalShedules = useDisclosure();
@@ -43,9 +48,28 @@ export default function ProfilePage({
             </div>
             <h2 className="text-2xl font-bold">{placeName}</h2>
             {/* <span>Rua das drogas, 34</span> */}
-            <Link href={"#"} className="text-[#00C2FF] font-medium text-base">
-              Adicionar endereço
-            </Link>
+
+            {placeAddress ? (
+              <span>
+                {placeAddress}
+
+                <Button
+                  variant="flat"
+                  className="bg-transparent text-[#00C2FF]"
+                  size="sm"
+                  onClick={()=> router.push("/register/address")}
+                  startContent={<FiEdit />}
+                  isIconOnly
+                />
+              </span>
+            ) : (
+              <Link
+                href={"/register/address"}
+                className="text-[#00C2FF] font-medium text-base"
+              >
+                Adicionar endereço
+              </Link>
+            )}
             {/* <Link className="text-[#00C2FF] font-medium text-base">
               @Baillan.barber
             </Link> */}
@@ -104,17 +128,20 @@ export default function ProfilePage({
       </div>
       <ReportModal
         isOpen={modalReport.isOpen}
+        userId={data?.user?.id ?? ""}
         onOpenChange={modalReport.onOpenChange}
         onSubmit={(close) => close()}
       />
       <ServicesModal
         isOpen={modalServices.isOpen}
         onOpenChange={modalServices.onOpenChange}
+        servicesData={services}
         onSubmit={(close) => close()}
       />
       <ScheduleModal
         isOpen={modalShedules.isOpen}
         onOpenChange={modalShedules.onOpenChange}
+        schedulesData={schedules}
         onSubmit={(close) => close()}
       />
       <QrcodeModal

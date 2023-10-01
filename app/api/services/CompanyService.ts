@@ -1,6 +1,6 @@
-import { getSession, useSession } from "next-auth/react";
+import { decode, getToken } from "next-auth/jwt";
+import { getSession } from "next-auth/react";
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 class CompanieServiceClass {
   URL_BASE: string;
 
@@ -8,19 +8,13 @@ class CompanieServiceClass {
     this.URL_BASE = process.env.NEXT_PUBLIC_URL_BASE as string;
   }
 
-  async getById(): Promise<any> {
-    const headerInstance = headers();
-  
-    const cookie = headerInstance.get("cookie") ?? "";
-
-    const authorization = cookie.split(";")[2].split("=")[1];
-
+  async getById(id: string): Promise<any> {
 
     try {
       var response = await fetch(this.URL_BASE + "/api/companie", {
         method: "GET",
         headers: new Headers({
-          Authorization: authorization,
+          CompanyId: id,
           "Content-Type": "application/json",
         }),
         cache: "no-cache",
@@ -58,7 +52,6 @@ class CompanieServiceClass {
       method: "POST",
     });
     var res = await data.json();
-    console.log(data);
     return res;
   }
   async addServices(id: any, services: any[]): Promise<any> {
@@ -74,6 +67,7 @@ class CompanieServiceClass {
     return res;
   }
   async update(id: string, update: any): Promise<any> {
+   
     const { data, error, isLoading } = await fetch(
       this.URL_BASE + "/api/companie",
       {

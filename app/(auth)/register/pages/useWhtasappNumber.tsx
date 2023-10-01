@@ -25,6 +25,7 @@ export default function useWhatsappNumber(props: CustomComponentProps) {
       onClickBack={props.previousFunction}
       onSubmit={onSubmit}
       chipEmail={data?.user?.email}
+      onChangeMenuHeader={props.onSendReport}
     >
       <input
        key={"phone-form"}

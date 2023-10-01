@@ -1,3 +1,4 @@
+import UserService from "@/app/api/services/UserService";
 import { Button } from "@nextui-org/button";
 import {
   Modal,
@@ -9,16 +10,20 @@ import {
   SelectItem,
   Textarea,
 } from "@nextui-org/react";
+import { useForm } from "react-hook-form";
 
 const ReportModal = ({
   onSubmit,
   isOpen,
+  userId,
   onOpenChange,
 }: {
   onSubmit: (onClose: any) => void;
   isOpen: boolean;
+  userId: string;
   onOpenChange: () => void;
 }) => {
+  const { register, handleSubmit } = useForm();
   const categories = [
     "Denúncia",
     "Bug",
@@ -26,6 +31,15 @@ const ReportModal = ({
     "Feedback",
     "Outro",
   ];
+  const onFormSubmit = (data: any, onClose: any) => {
+    console.log(data);
+
+    const { title, description } = data;
+
+    UserService.sendReport(title, description, userId).then((res) => {
+      if (res.status == 200) onSubmit(onClose);
+    });
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -35,7 +49,7 @@ const ReportModal = ({
     >
       <ModalContent>
         {(onClose) => (
-          <>
+          <form onSubmit={handleSubmit((data) => onFormSubmit(data, onClose))}>
             <ModalHeader>
               <h2 className="font-bold text-2xl">Reportar um problema</h2>
             </ModalHeader>
@@ -46,6 +60,7 @@ const ReportModal = ({
                 placeholder="Selecione"
                 className="max-w-xs"
                 required
+                {...register("title")}
               >
                 {categories.map((cat) => (
                   <SelectItem key={cat} value={cat}>
@@ -62,17 +77,18 @@ const ReportModal = ({
                 labelPlacement="outside"
                 placeholder="Enter your description"
                 className="max-w-xs mt-2"
+                {...register("description")}
               />
             </ModalBody>
             <ModalFooter>
               <Button color="danger" onPress={() => onSubmit(onClose)}>
                 Cancelar
               </Button>
-              <Button color="primary" onPress={() => onSubmit(onClose)}>
+              <Button color="primary" type="submit">
                 Enviar
               </Button>
             </ModalFooter>
-          </>
+          </form>
         )}
       </ModalContent>
     </Modal>

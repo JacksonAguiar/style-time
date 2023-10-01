@@ -29,6 +29,7 @@ export default function useStepPlaceName(props: CustomComponentProps) {
       onSubmit={onSubmit}
       key={"place-name-form"}
       chipEmail={data?.user?.email}
+      onChangeMenuHeader={props.onSendReport}
     >
       <input
         className="w-full text-xl outline-transparent font-normal"

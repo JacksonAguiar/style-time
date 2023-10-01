@@ -4,17 +4,21 @@ import ProfilePage from "./pages/profile";
 import CustomNavigationBarComponent from "./steps.component";
 import CompanyService from "@/app/api/services/CompanyService";
 import CompanyDataResponse from "./interface.response";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/(routes)/auth/[...nextauth]/route";
 
 export default async function Dashboard() {
   let pages: any = {};
-  await CompanyService.getById()
+
+  const session = await getServerSession(authOptions);
+  
+  await CompanyService.getById(session?.user?.companieId ?? "")
     .then((response) => {
       const company: CompanyDataResponse = response.data;
-      console.log(company.Appointments);
       const dayOfWeek = new Intl.DateTimeFormat("pt-BR", {
         weekday: "long",
       }).format(new Date());
-      
+
       const sch = (company.Schedules ?? []).filter((e) =>
         e.days.includes(dayOfWeek)
       )[0];
@@ -40,6 +44,7 @@ export default async function Dashboard() {
           ),
           profile: (
             <ProfilePage
+              placeAddress={company.address}
               placeName={company.name}
               plan={company.User}
               sharedCode={company.shareCode}

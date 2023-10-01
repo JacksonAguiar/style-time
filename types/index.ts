@@ -12,3 +12,22 @@ export interface PlanI {
   annualValue: number;
   annualDiscount: number;
 }
+
+export interface IServices {
+  id: string;
+  name: string;
+  duration: number;
+  companieId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ISchedules {
+  id: string;
+  days: string[]; // Assuming 'days' is an array of strings
+  companieId: string;
+  start: string;
+  end: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

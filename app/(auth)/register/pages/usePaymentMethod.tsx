@@ -34,6 +34,7 @@ export default function useStepPaymentMethod(props: CustomComponentProps) {
       onClickBack={props.previousFunction}
       onSubmit={onSubmit}
       chipEmail={data?.user?.email}
+      onChangeMenuHeader={props.onSendReport}
     >
       <div className="flex flex-col gap-5">
         <Input

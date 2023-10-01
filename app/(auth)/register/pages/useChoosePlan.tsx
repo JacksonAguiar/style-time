@@ -69,6 +69,7 @@ export default function useStepPlans(props: CustomComponentProps) {
         onClickBack={props.previousFunction}
         onSubmit={onSubmit}
         chipEmail={data?.user?.email}
+        onChangeMenuHeader={props.onSendReport}
       >
         {plans.length != 0 && (
           <RadioGroup

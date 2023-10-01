@@ -34,7 +34,10 @@ class AppointmentsServiceClass {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status: status }),
+        body: JSON.stringify({
+          status: status,
+          confirmationCode: status == "confirmed" ? generateRandomCode() : null,
+        }),
       });
 
       const res = await response.json();
@@ -54,7 +57,7 @@ class AppointmentsServiceClass {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         }
       );
 
@@ -66,6 +69,25 @@ class AppointmentsServiceClass {
     }
   }
 }
+function generateRandomCode(): string {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
 
+  let code = "";
+
+  // Generate 3 random letters
+  for (let i = 0; i < 3; i++) {
+    const randomIndex = Math.floor(Math.random() * letters.length);
+    code += letters[randomIndex];
+  }
+
+  // Generate 3 random numbers
+  for (let i = 0; i < 3; i++) {
+    const randomIndex = Math.floor(Math.random() * numbers.length);
+    code += numbers[randomIndex];
+  }
+
+  return code;
+}
 var AppointmentsService = new AppointmentsServiceClass();
 export default AppointmentsService;
