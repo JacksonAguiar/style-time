@@ -44,10 +44,10 @@ export default function Hero() {
               className="text-5xl md:text-6xl font-extrabold leading-tighter tracking-tighter mb-4"
               data-aos="zoom-y-out"
             >
-              Elevate your
+              Eleve o nível do seu
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">
                 {" "}
-                Business
+                negócio
                 <br />
               </span>
             </h1>
@@ -57,10 +57,10 @@ export default function Hero() {
                 data-aos="zoom-y-out"
                 data-aos-delay="150"
               >
-                Empower your barber or salon business with Style Time - your
-                trusted partner for seamless appointment management. Say goodbye
-                to inefficiencies and hello to a new level of productivity and
-                customer satisfaction.
+                 Aprimore sua barbearria ou salão de beleza com Style Time - seu
+                 parceiro confiável para gerenciamento contínuo de compromissos. Diga adeus
+                 às ineficiências e olá a um novo nível de produtividade e
+                 satisfação do cliente.
               </p>
               <div
                 className="max-w-xs mx-auto sm:max-w-none sm:flex sm:justify-center"

@@ -30,7 +30,7 @@ export default function ProfilePage({
   plan: any;
 }) {
   const { data } = useSession();
-  const router = useRouter()
+  const router = useRouter();
 
   const modalServices = useDisclosure();
   const modalShedules = useDisclosure();
@@ -57,7 +57,7 @@ export default function ProfilePage({
                   variant="flat"
                   className="bg-transparent text-[#00C2FF]"
                   size="sm"
-                  onClick={()=> router.push("/register/address")}
+                  onClick={() => router.push("/register/address")}
                   startContent={<FiEdit />}
                   isIconOnly
                 />
@@ -134,6 +134,11 @@ export default function ProfilePage({
       />
       <ServicesModal
         isOpen={modalServices.isOpen}
+        onEdit={() =>
+          router.push(
+            "/update-info?screen=services"
+          )
+        }
         onOpenChange={modalServices.onOpenChange}
         servicesData={services}
         onSubmit={(close) => close()}
@@ -141,6 +146,11 @@ export default function ProfilePage({
       <ScheduleModal
         isOpen={modalShedules.isOpen}
         onOpenChange={modalShedules.onOpenChange}
+        onEdit={() =>
+          router.push(
+            "/update-info?screen=schedule"
+          )
+        }
         schedulesData={schedules}
         onSubmit={(close) => close()}
       />

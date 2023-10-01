@@ -14,11 +14,13 @@ const ServicesModal = ({
   isOpen,
   servicesData,
   onOpenChange,
+  onEdit,
 }: {
   onSubmit: (onClose: any) => void;
   isOpen: boolean;
   servicesData: IServices[];
   onOpenChange: () => void;
+  onEdit: () => void;
 }) => {
   return (
     <Modal
@@ -34,6 +36,7 @@ const ServicesModal = ({
               <h2 className="font-bold text-2xl">Seus serviços</h2>
               <Button
                 startContent={<FiEdit color="#00C2FF" size={20} />}
+                onClick={onEdit}
                 isIconOnly
                 className="bg-transparent"
               ></Button>

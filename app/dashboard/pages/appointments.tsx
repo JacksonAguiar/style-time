@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Popover,
+  useDisclosure,
 } from "@nextui-org/react";
 import { Key, useState } from "react";
 
@@ -18,22 +19,26 @@ import { LiaDotCircleSolid } from "react-icons/lia";
 import { getNextDays } from "@/utils/time";
 import { AppointmentI } from "../interface.response";
 import AppointmentsService from "@/app/api/services/AppointmentsService";
+import ConfirmHourModal from "../components/ConfirmateHours";
 
 export default function AppointmentPage({
   appointments,
 }: {
   appointments: any[];
 }) {
+  const modalConfirmation = useDisclosure();
   const days = getNextDays();
 
   const [data, setData] = useState<AppointmentI[]>(appointments);
-  // const [ket, setKey] = useState<string>("");
+  const [elToConfirm, setElToConfirm] = useState<AppointmentI>();
+  const [confirmedHour, setConfirmedHour] = useState<string>();
 
   const onChangeStatus = async (
     id: string,
-    status: "confirmed" | "declined"
+    status: "confirmed" | "declined",
+    confirmedHour?: string
   ) => {
-    await AppointmentsService.updateStatus(id, status)
+    await AppointmentsService.updateStatus(id, status, confirmedHour)
       .then((res) => {
         if (res.status == 200) {
           removeFromList(id);
@@ -62,7 +67,7 @@ export default function AppointmentPage({
   };
 
   const removeFromList = (id: string) => {
-    const updatedData = data.filter(item => item.id !== id);
+    const updatedData = data.filter((item) => item.id !== id);
     setData(updatedData);
   };
 
@@ -108,8 +113,27 @@ export default function AppointmentPage({
       <SideTabBar
         days={days}
         appointments={data}
-        onChangeStatus={onChangeStatus}
+        onChangeStatus={(id, status, el) => {
+          if (status == "declined" || (el?.hours.length ?? 0) < 2) {
+            onChangeStatus(id, status, el?.hours[0]);
+          } else {
+            setElToConfirm(el);
+            modalConfirmation.onOpen();
+          }
+        }}
         onChangeSelection={handleDayChange}
+      />
+      <ConfirmHourModal
+        isOpen={modalConfirmation.isOpen}
+        hour1={new Date(elToConfirm?.hours[0] ?? "")}
+        hour2={new Date(elToConfirm?.hours[1] ?? "")}
+        onSelected={setConfirmedHour}
+        onOpenChange={modalConfirmation.onOpenChange}
+        onSubmit={(close: any) => {
+          onChangeStatus(elToConfirm?.id ?? "", "confirmed", confirmedHour).then((res) => {
+            close();
+          });
+        }}
       />
     </div>
   );
@@ -123,7 +147,11 @@ const SideTabBar = ({
 }: {
   days: Date[];
   appointments: any[];
-  onChangeStatus: (id: string, status: "confirmed" | "declined") => void;
+  onChangeStatus: (
+    id: string,
+    status: "confirmed" | "declined",
+    element?: AppointmentI
+  ) => void;
   onChangeSelection: (key: Key) => void;
 }) => {
   return (
@@ -175,9 +203,9 @@ const SideTabBar = ({
                   ) : (
                     appointments.map((e, i) => {
                       const hour1Date = new Date(e.hours[0]);
-                      let compare = Intl.DateTimeFormat("en-US", {
-                        day: "numeric",
-                      }).format(hour1Date);
+                      // let compare = Intl.DateTimeFormat("en-US", {
+                      //   day: "numeric",
+                      // }).format(hour1Date);
 
                       // if (day == compare)
                       return (
@@ -197,7 +225,7 @@ const SideTabBar = ({
                           }
                           name={e.name}
                           onCancel={() => onChangeStatus(e.id, "declined")}
-                          onConfirm={() => onChangeStatus(e.id, "confirmed")}
+                          onConfirm={() => onChangeStatus(e.id, "confirmed", e)}
                           services={e.services}
                         />
                       );

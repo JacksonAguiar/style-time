@@ -15,11 +15,13 @@ const ScheduleModal = ({
   isOpen,
   schedulesData,
   onOpenChange,
+  onEdit,
 }: {
   onSubmit: (onClose: any) => void;
   isOpen: boolean;
   schedulesData: ISchedules[];
   onOpenChange: () => void;
+  onEdit: () => void;
 }) => {
   return (
     <Modal
@@ -36,6 +38,7 @@ const ScheduleModal = ({
               <Button
                 startContent={<FiEdit color="#00C2FF" size={20} />}
                 isIconOnly
+                onClick={onEdit}
                 className="bg-transparent"
               ></Button>
             </ModalHeader>

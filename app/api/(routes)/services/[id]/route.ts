@@ -1,6 +1,4 @@
 import prisma from "@/config/prisma";
-import { hash } from "bcrypt";
-import { randomInt } from "crypto";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -14,40 +12,33 @@ export async function POST(
     e.companieId = id;
     return e;
   });
+  const response = await prisma.services.createMany({
+    data: data,
+  });
 
-  try {
-    const comp = await prisma.schedules.createMany({
-      data: data,
-    });
-
-    return NextResponse.json(comp);
-  } catch (error) {
-    console.log(error);
-  }
+  return NextResponse.json(response);
 }
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
+  const companieId = params.id;
 
-  const comp = await prisma.schedules.findMany({
-    where: { companieId: id },
+  const response = await prisma.services.findMany({
+    where: { companieId },
   });
 
-  return NextResponse.json(comp);
+  return NextResponse.json(response);
 }
-
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  //schedule id
   const id = params.id;
 
-  const deleted = await prisma.schedules.delete({
-    where: { id },
-  });
+  if (!id) NextResponse.json({ message: "no id provided" }, { status: 403 });
 
-  return NextResponse.json(deleted);
+  const response = await prisma.services.delete({ where: { id } });
+
+  return NextResponse.json(response);
 }

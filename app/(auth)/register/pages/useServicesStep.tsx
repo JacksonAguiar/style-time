@@ -2,7 +2,7 @@
 
 import { FiPlus, FiX } from "react-icons/fi";
 import { Page } from "@/components/FormScreen";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Chip,
@@ -20,34 +20,63 @@ import { useSession } from "next-auth/react";
 import CompanieService from "@/app/api/services/CompanyService";
 
 export default function useStepServices(props: CustomComponentProps) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { data, update } = useSession();
+
   const initial = { name: "", duration: 0 };
+
   const [services, setServices] = React.useState<
     { name: string; duration: number }[]
   >([]);
+
   const [service, setService] = React.useState<{
     name: string;
     duration: number;
   }>(initial);
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  useEffect(() => {
+    if (props.edit)
+      CompanieService.services(data?.user?.companieId ?? "").then((data) => {
+        if (data) setServices(data);
+      });
 
-  const styles = {
-    label: "font-normal text-base",
-    input: ["font-medium"],
-    inputWrapper: ["h-12"],
-  };
-  const handleClose = (s: any) => {
-    setServices(services.filter((s) => s.name !== s.name));
-  };
-  const handleAdd = (close: any) => {
-    if (service.name != "" && service.duration != 0) {
-      setServices((prev) => [...prev, service]);
+    return () => console.log("Cleanup..");
+  }, [props.edit, data?.user?.companieId]);
 
-      setService(initial);
-      close();
+  const handleDelete = (serv: any) => {
+    setServices(services.filter((s) => s.name !== serv.name));
+  };
+
+  const handleRemove = (serv: any) => {
+    if (props.edit) {
+      CompanieService.deleteService(serv.id).then((data) => {
+        if (data) handleDelete(serv);
+      });
+    } else {
+      handleDelete(serv);
     }
   };
-  const { data, update } = useSession();
+
+  const handleAdd = (close: any) => {
+    var success = true;
+    if (service.name != "" && service.duration != 0) {
+      if (props.edit) {
+        CompanieService.addOneService(
+          data?.user?.companieId ?? "",
+          service.name,
+          service.duration
+        ).then((data) => {
+          if (!data) success = false;
+        });
+      }
+      if (success) {
+        setServices((prev) => [...prev, service]);
+        setService(initial);
+        close();
+      }
+    }
+  };
+
   const onSubmit = async () => {
     const { id, companieId } = data?.user ?? {};
     var res = await CompanieService.addServices(companieId, services);
@@ -57,6 +86,12 @@ export default function useStepServices(props: CustomComponentProps) {
       props.nextFunction();
     }
   };
+
+  const styles = {
+    label: "font-normal text-base",
+    input: ["font-medium"],
+    inputWrapper: ["h-12"],
+  };
   return (
     <Page
       Title="Quais serviços você oferece?"
@@ -64,6 +99,7 @@ export default function useStepServices(props: CustomComponentProps) {
       onSubmit={onSubmit}
       chipEmail={data?.user?.email}
       onChangeMenuHeader={props.onSendReport}
+      removeFooter={props.edit}
     >
       <div className="mb-5 flex flex-wrap gap-3">
         {services.length == 0 && (
@@ -75,7 +111,7 @@ export default function useStepServices(props: CustomComponentProps) {
           return (
             <Chip
               key={i}
-              onClose={() => handleClose(e)}
+              onClose={() => handleRemove(e)}
               variant="flat"
               size="lg"
               className="text-lg"

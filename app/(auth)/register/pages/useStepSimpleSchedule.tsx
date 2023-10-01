@@ -12,7 +12,7 @@ import {
   CheckboxGroup,
 } from "@nextui-org/react";
 import { daysForLocale, generateHourList } from "@/utils/time";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CustomCheckbox } from "@/components/CustomCheckbox";
 import { Page } from "@/components/FormScreen";
 import { CustomComponentProps } from "../page";
@@ -24,15 +24,23 @@ export default function useStepSimpleSchedule(props: CustomComponentProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [groupSelected, setGroupSelected] = React.useState<string[]>([]);
   const [schedules, setSchedules] = useState<
-    { days: string[]; start: string; end: string }[]
+    { id?: string; days: string[]; start: string; end: string }[]
   >([]);
   const [hoursComponents, setHoursComponents] = useState(defaultTime);
 
   const transformInShort = (days: string[]) =>
     days.map((day) => day.slice(0, 3)).join(", ");
 
-  const deleteSchedule = (index: Number) =>
-    setSchedules((prev) => prev.filter((_, i) => i !== index));
+  const deleteSchedule = async (index: Number, id?: string) => {
+    var success = true;
+    if (props.edit) {
+      const res = await ScheduleService.delete(id ?? "");
+      if (!res) success = false;
+    }
+    if (success) {
+      setSchedules((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
 
   const onChangeStart = (new_value: string) => {
     setHoursComponents((prev) => ({ start: new_value, end: prev.end }));
@@ -42,23 +50,44 @@ export default function useStepSimpleSchedule(props: CustomComponentProps) {
     setHoursComponents((prev) => ({ start: prev.start, end: new_value }));
   };
 
-  const saveSchedule = (onClose: any) => {
+  useEffect(() => {
+    if (props.edit)
+      ScheduleService.getAll(data?.user?.companieId ?? "").then((data) => {
+        if (data) setSchedules(data);
+      });
+
+    return () => console.log("Cleanup..");
+  }, [props.edit, data?.user?.companieId]);
+
+  const saveSchedule = async (onClose: any) => {
     if (
       hoursComponents.start != "" &&
       hoursComponents.end != "" &&
       schedules.length < 3
     ) {
       const { start, end } = hoursComponents;
-      const data = {
+      const schedule = {
         days: groupSelected,
         start: start,
         end: end,
       };
-      console.log(data);
-      setSchedules((prev: any) => [...prev, data]);
-      setHoursComponents(defaultTime);
-      setGroupSelected([]);
-      onClose();
+
+      var success = true;
+      if (props.edit) {
+        const { companieId } = data?.user ?? {};
+
+        var res = await ScheduleService.create([schedule], companieId ?? "");
+        if (!res) {
+          success = false;
+        }
+      }
+
+      if (success) {
+        setSchedules((prev: any) => [...prev, schedule]);
+        setHoursComponents(defaultTime);
+        setGroupSelected([]);
+        onClose();
+      }
     }
   };
 
@@ -74,7 +103,7 @@ export default function useStepSimpleSchedule(props: CustomComponentProps) {
 
     var res = await ScheduleService.create(schedules, companieId ?? "");
     if (res) {
-     await UserService.update(id ?? "", {
+      await UserService.update(id ?? "", {
         registerStep: props.step,
       });
       update({ resgisterStep: props.step });
@@ -87,10 +116,10 @@ export default function useStepSimpleSchedule(props: CustomComponentProps) {
       Title="Horários"
       onClickBack={props.previousFunction}
       onSubmit={onSubmit}
-      submitTextButton="Concluir"
-      removeFooter={schedules.length == 0}
+      removeFooter={schedules.length == 0 || props.edit}
       chipEmail={data?.user?.email}
       onChangeMenuHeader={props.onSendReport}
+      submitTextButton={"Concluir"}
     >
       <div>
         <div>
@@ -101,7 +130,7 @@ export default function useStepSimpleSchedule(props: CustomComponentProps) {
                 key={i}
                 days={transformInShort(e.days)}
                 hour={e.start + " - " + e.end}
-                onDelete={() => deleteSchedule(i)}
+                onDelete={() => deleteSchedule(i, e.id)}
               />
             ))}
           </div>

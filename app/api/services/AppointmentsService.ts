@@ -26,7 +26,8 @@ class AppointmentsServiceClass {
 
   async updateStatus(
     id: string,
-    status: "confirmed" | "declined"
+    status: "confirmed" | "declined",
+    confirmedHour?: string
   ): Promise<any> {
     try {
       var response = await fetch(this.URL_BASE + "/api/appointments/" + id, {

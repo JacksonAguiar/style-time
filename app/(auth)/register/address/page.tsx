@@ -32,7 +32,7 @@ export default function Register() {
     }), */}
 
       <UseStepAddressPlace
-        nextFunction={() => router.push("/dashboard")}
+        nextFunction={() => location.replace("/dashboard")}
         previousFunction={() => router.back()}
       />
     </div>
