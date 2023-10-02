@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 
 import Link from "next/link";
 import Logo from "./logo";
-import Dropdown from "@/components/utils/dropdown";
 import MobileMenu from "./mobile-menu";
 
 export default function Header() {
@@ -41,7 +40,7 @@ export default function Header() {
               <li>
                 <Link
                   // href="/signin"
-                  href="#EmDesenvolvimento"
+                  href="#EmDesenvolvimento  "
                   className="btn-sm text-gray-200 bg-gray-900 hover:bg-gray-800 ml-3 rounded-xl"
                 >
                   <span>Junte-se a nós</span>
