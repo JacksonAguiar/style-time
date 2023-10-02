@@ -40,10 +40,11 @@ export default function Header() {
             <ul className="flex grow justify-end flex-wrap items-center">
               <li>
                 <Link
-                  href="/signin"
-                  className="btn-sm text-gray-200 bg-gray-900 hover:bg-gray-800 ml-3"
+                  // href="/signin"
+                  href="#EmDesenvolvimento"
+                  className="btn-sm text-gray-200 bg-gray-900 hover:bg-gray-800 ml-3 rounded-xl"
                 >
-                  <span>Join us</span>
+                  <span>Junte-se a nós</span>
                   <svg
                     className="w-3 h-3 fill-current text-gray-400 shrink-0 ml-2 -mr-1"
                     viewBox="0 0 12 12"
